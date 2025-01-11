@@ -28,14 +28,14 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import TextInput from '@/components/TextInput.vue'
-import ButtonComponent from '@/components/ButtonComponent.vue'
+import TextInput from '@/components/inputs/TextInput.vue'
+import ButtonComponent from '@/components/inputs/ButtonComponent.vue'
 import { useAuthStore } from '@/stores/auth-store.js'
 import LoadingOverlay from '@/components/LoadingOverlay.vue'
 import { useRouter } from 'vue-router'
 
 const email = ref('')
-const password = ref('')
+const password = ref('test')
 const loading = ref(false)
 const authStore = useAuthStore()
 const errorMessage = ref(null)
@@ -59,5 +59,3 @@ const handleSubmit = async () => {
   }
 }
 </script>
-
-<style scoped></style>

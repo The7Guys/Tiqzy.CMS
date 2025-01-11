@@ -1,6 +1,6 @@
 <template>
   <header class="bg-blue-500 text-white px-4 md:px-14 py-4 flex items-center justify-between">
-    <div class="font-bold">Tiqzy CMS</div>
+    <a href="/" class="font-bold">Tiqzy CMS</a>
 
     <div>
       <button v-if="authStore.token" @click="logout">Logout</button>
@@ -22,7 +22,6 @@ const router = useRouter()
 
 onMounted(() => {
   if (!authStore.token) {
-    // route to login
     router.push({ name: 'login' })
   }
 })
@@ -32,5 +31,3 @@ const logout = () => {
   router.push({ name: 'login' })
 }
 </script>
-
-<style scoped></style>
