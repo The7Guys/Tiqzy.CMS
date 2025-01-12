@@ -35,13 +35,13 @@ import LoadingOverlay from '@/components/LoadingOverlay.vue'
 import { useRouter } from 'vue-router'
 
 const email = ref('')
-const password = ref('test')
+const password = ref('')
 const loading = ref(false)
 const authStore = useAuthStore()
 const errorMessage = ref(null)
 const router = useRouter()
 
-onMounted(() => {
+onMounted(async () => {
   if (authStore.token) {
     router.push({ name: 'home' })
   }
@@ -52,8 +52,10 @@ const handleSubmit = async () => {
   loading.value = true
   try {
     await authStore.login(email.value, password.value)
+    router.push({ name: 'home' })
   } catch (error) {
     errorMessage.value = error.message
+    console.error(error)
   } finally {
     loading.value = false
   }
