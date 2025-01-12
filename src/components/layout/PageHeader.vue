@@ -46,6 +46,12 @@ const routes = [
       name: 'users',
     },
   },
+  {
+    title: 'Tickets',
+    route: {
+      name: 'tickets',
+    },
+  },
 ]
 </script>
 <style scoped></style>
