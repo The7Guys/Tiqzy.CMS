@@ -54,4 +54,3 @@ const routes = [
   },
 ]
 </script>
-<style scoped></style>
