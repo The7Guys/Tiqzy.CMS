@@ -1,0 +1,62 @@
+<template>
+  <div class="p-4">
+    <h1 class="text-2xl font-bold mb-4" style="text-align: left !important;">Wishlists</h1>
+
+    <!-- Tab Component -->
+    <TabComponent
+      :tabs="tabs"
+      :components="components"
+      default-tab="getAll"
+    />
+  </div>
+</template>
+
+<script>
+import TabComponent from "@/components/TabComponent.vue";
+import GetAll from "@/components/wishlists/GetAll.vue";
+import GetSingle from "@/components/wishlists/GetSingle.vue";
+import CreateWishlist from "@/components/wishlists/CreateWishlist.vue";
+import GetItems from "@/components/wishlists/GetItems.vue";
+import AddItem from "@/components/wishlists/AddItem.vue";
+import GetShared from "@/components/wishlists/GetShared.vue";
+import ShareWishlist from "@/components/wishlists/ShareWishlist.vue";
+import DeleteWishlist from "@/components/wishlists/DeleteWishlist.vue";
+
+export default {
+  components: {
+    TabComponent,
+  },
+  data() {
+    return {
+      // Define the tabs
+      tabs: [
+        { key: "getAll", label: "Get All" },
+        { key: "getSingle", label: "Get Single" },
+        { key: "createWishlist", label: "Create Wishlist" },
+        { key: "getItems", label: "Get Items" },
+        { key: "addItem", label: "Add Item" },
+        { key: "getShared", label: "Get Shared" },
+        { key: "shareWishlist", label: "Share Wishlist" },
+        { key: "deleteWishlist", label: "Delete Wishlist" },
+      ],
+      // Map tabs to components
+      components: {
+        getAll: GetAll,
+        getSingle: GetSingle,
+        createWishlist: CreateWishlist,
+        getItems: GetItems,
+        addItem: AddItem,
+        getShared: GetShared,
+        shareWishlist: ShareWishlist,
+        deleteWishlist: DeleteWishlist,
+      },
+    };
+  },
+};
+</script>
+
+<style scoped>
+h1 {
+  text-align: center;
+}
+</style>
