@@ -1,5 +1,18 @@
 <template>
   <div>
+    <!-- Header with Fetch Button -->
+    <div class="mb-4 flex items-center space-x-4">
+      <button
+        @click="fetchData"
+        class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        Fetch
+      </button>
+      <div v-if="errorMessage" class="text-red-500">
+        {{ errorMessage }}
+      </div>
+    </div>
+
     <!-- Filter by email -->
     <div class="mb-4">
       <label for="emailFilter" class="block text-sm font-medium text-gray-700">
@@ -26,8 +39,8 @@
         <th @click="sort('Timestamp')" class="cursor-pointer">
           Timestamp <span v-if="sortConfig.key === 'Timestamp'">{{ sortArrow }}</span>
         </th>
-        <th @click="sort('email')" class="cursor-pointer">
-          Email <span v-if="sortConfig.key === 'email'">{{ sortArrow }}</span>
+        <th @click="sort('Email')" class="cursor-pointer">
+          Email <span v-if="sortConfig.key === 'Email'">{{ sortArrow }}</span>
         </th>
         <th @click="sort('IsShared')" class="cursor-pointer">
           Is Shared <span v-if="sortConfig.key === 'IsShared'">{{ sortArrow }}</span>
@@ -35,20 +48,16 @@
         <th @click="sort('ShareToken')" class="cursor-pointer">
           Share Token <span v-if="sortConfig.key === 'ShareToken'">{{ sortArrow }}</span>
         </th>
-        <th @click="sort('Quantity')" class="cursor-pointer">
-          Quantity <span v-if="sortConfig.key === 'Quantity'">{{ sortArrow }}</span>
-        </th>
       </template>
 
-      <template v-for="item in filteredAndSortedData" :key="item.RowKey">
+      <template v-for="item in filteredAndSortedData" :key="item.ID">
         <TableRow>
-          <td>{{ item.PartitionKey }}</td>
-          <td>{{ item.RowKey }}</td>
+          <td>{{ item.ID }}</td>
+          <td>{{ item.ProductID }}</td>
           <td>{{ item.Timestamp }}</td>
-          <td>{{ item.email }}</td>
+          <td>{{ item.Email }}</td>
           <td>{{ item.IsShared }}</td>
           <td>{{ item.ShareToken }}</td>
-          <td>{{ item.Quantity }}</td>
         </TableRow>
       </template>
     </TableComponent>
@@ -56,6 +65,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import TableComponent from "@/components/TableComponent.vue";
 import TableRow from "@/components/TableRow.vue";
 
@@ -66,28 +76,8 @@ export default {
   },
   data() {
     return {
-      // Raw data (example, replace with API data)
-      data: [
-        {
-          PartitionKey: "123e4567-e89b-12d3-a456-426614174000",
-          RowKey: "product_1",
-          Timestamp: "2023-01-15T10:30:00Z",
-          email: "user1@example.com",
-          IsShared: true,
-          ShareToken: "token123",
-          Quantity: 2,
-        },
-        {
-          PartitionKey: "123e4567-e89b-12d3-a456-426614174001",
-          RowKey: "product_2",
-          Timestamp: "2023-01-16T11:00:00Z",
-          email: "user2@example.com",
-          IsShared: false,
-          ShareToken: "token124",
-          Quantity: 1,
-        },
-        // Add more mock data here
-      ],
+      // Fetched data from the backend
+      data: [],
       // Sorting state
       sortConfig: {
         key: "",
@@ -97,6 +87,8 @@ export default {
       filters: {
         email: "",
       },
+      // Error message
+      errorMessage: null,
     };
   },
   computed: {
@@ -107,7 +99,7 @@ export default {
       // Filter by email
       if (this.filters.email) {
         result = result.filter((item) =>
-          item.email.toLowerCase().includes(this.filters.email.toLowerCase())
+          item.Email.toLowerCase().includes(this.filters.email.toLowerCase())
         );
       }
 
@@ -141,6 +133,21 @@ export default {
         this.sortConfig.ascending = true;
       }
     },
+    // Fetch data from the backend
+    async fetchData() {
+      try {
+        const response = await axios.get("http://api.tiqzyapi.nl/wishlists"); // Replace with your API URL
+        this.data = response.data;
+        this.errorMessage = null; // Clear error message on success
+      } catch (error) {
+        console.error("Failed to fetch wishlists:", error);
+        this.errorMessage = "An error occurred while fetching wishlists."; // Display inline error
+      }
+    },
+  },
+  mounted() {
+    // Fetch data when the component is mounted
+    this.fetchData();
   },
 };
 </script>
@@ -150,7 +157,6 @@ th {
   padding: 8px;
   text-align: left;
   background-color: #f3f4f6;
-  position: relative; /* Required for arrow positioning */
 }
 
 th:hover {
@@ -161,7 +167,7 @@ td {
   padding: 8px;
 }
 
-th span {
-  margin-left: 5px; /* Add spacing between column name and arrow */
+.text-red-500 {
+  color: #ef4444;
 }
 </style>

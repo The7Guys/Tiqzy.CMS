@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -44,17 +46,36 @@ export default {
     };
   },
   methods: {
-    // Simulate sharing a wishlist
-    shareWishlist() {
+    // Share wishlist to generate a share token
+    async shareWishlist() {
       if (!this.guid) {
         this.errorMessage = "Please enter a valid GUID.";
         this.shareToken = null;
         return;
       }
 
-      // Mock API response
-      this.shareToken = `token-${this.guid.slice(-6)}`; // Generate a mock share token
-      this.errorMessage = null;
+      const baseURL = "http://api.tiqzyapi.nl/wishlists"; // Replace with your API endpoint
+
+      try {
+        // Make the POST request to generate the share token
+        const response = await axios.post(`${baseURL}/${this.guid}/share`);
+
+        // Handle the success response
+        this.shareToken = response.data.token; // Assuming the backend returns the token in `response.data.token`
+        this.errorMessage = null;
+      } catch (error) {
+        console.error("Error sharing wishlist:", error);
+
+        // Handle errors
+        if (error.response) {
+          this.errorMessage =
+            error.response.data.message || "Failed to share wishlist.";
+        } else {
+          this.errorMessage = "An unexpected error occurred.";
+        }
+
+        this.shareToken = null;
+      }
     },
   },
 };

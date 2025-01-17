@@ -26,12 +26,14 @@
     <div v-if="responseData" class="mt-4">
       <TableComponent>
         <template #table-header>
+          <th>Wishlist ID</th>
           <th>Email</th>
-          <th>Message</th>
+          <th>Is Shared</th>
         </template>
         <TableRow>
-          <td>{{ responseData.email }}</td>
-          <td>{{ responseData.message }}</td>
+          <td>{{ responseData.ID }}</td>
+          <td>{{ responseData.Email }}</td>
+          <td>{{ responseData.IsShared }}</td>
         </TableRow>
       </TableComponent>
     </div>
@@ -44,6 +46,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import TableComponent from "@/components/TableComponent.vue";
 import TableRow from "@/components/TableRow.vue";
 
@@ -60,22 +63,40 @@ export default {
     };
   },
   methods: {
-    // Simulate creating a wishlist
-    createWishlist() {
+    // Create wishlist via API
+    async createWishlist() {
       if (!this.email) {
         this.errorMessage = "Please enter a valid email.";
         this.responseData = null;
         return;
       }
 
-      // Mock API response
-      const mockResponse = {
-        email: this.email,
-        message: "Wishlist created successfully!",
-      };
+      const baseURL = "http://api.tiqzyapi.nl/wishlists";
 
-      this.responseData = mockResponse;
-      this.errorMessage = null;
+      try {
+        // Make the POST request to create a wishlist
+        const response = await axios.post(baseURL, { email: this.email });
+
+        // Map the response data directly
+        this.responseData = {
+          ID: response.data.ID, // Maps to backend's `ID`
+          Email: response.data.Email, // Maps to backend's `Email`
+          IsShared: response.data.IsShared, // Maps to backend's `IsShared`
+        };
+
+        this.errorMessage = null; // Clear error message
+      } catch (error) {
+        console.error("Error creating wishlist:", error);
+
+        // Handle errors
+        if (error.response) {
+          this.errorMessage = error.response.data.message || "Failed to create wishlist.";
+        } else {
+          this.errorMessage = "An unexpected error occurred.";
+        }
+
+        this.responseData = null;
+      }
     },
   },
 };

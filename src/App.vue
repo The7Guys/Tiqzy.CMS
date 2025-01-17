@@ -19,9 +19,9 @@ const authStore = useAuthStore()
 const router = useRouter()
 
 onMounted(() => {
-  //if (!authStore.token) {
-  //  router.push({ name: 'login' })
-  //}
+  if (!authStore.token) {
+   router.push({ name: 'login' })
+  }
 
   // On route change, refresh token
   router.afterEach(() => {

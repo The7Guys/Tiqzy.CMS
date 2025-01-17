@@ -26,15 +26,13 @@
     <div v-if="sharedWishlist.length" class="mt-4">
       <TableComponent>
         <template #table-header>
-          <th>Product ID</th>
+          <th>Event ID</th>
           <th>Quantity</th>
-          <th>Timestamp</th>
         </template>
-        <template v-for="item in sharedWishlist" :key="item.RowKey">
+        <template v-for="item in sharedWishlist" :key="item.ID">
           <TableRow>
-            <td>{{ item.RowKey }}</td>
+            <td>{{ item.EventID }}</td>
             <td>{{ item.Quantity }}</td>
-            <td>{{ item.Timestamp }}</td>
           </TableRow>
         </template>
       </TableComponent>
@@ -48,6 +46,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import TableComponent from "@/components/TableComponent.vue";
 import TableRow from "@/components/TableRow.vue";
 
@@ -65,29 +64,39 @@ export default {
   },
   methods: {
     // Fetch shared wishlist by Share Token
-    fetchSharedWishlist() {
-      // Simulate API response
-      const mockData = {
-        token123: [
-          {
-            RowKey: "product_1",
-            Quantity: 2,
-            Timestamp: "2023-01-15T10:30:00Z",
-          },
-          {
-            RowKey: "product_2",
-            Quantity: 1,
-            Timestamp: "2023-01-16T11:00:00Z",
-          },
-        ],
-      };
+    async fetchSharedWishlist() {
+      const baseURL = "http://api.tiqzyapi.nl/wishlists/shared"; // Replace with your API endpoint
 
-      if (mockData[this.shareToken]) {
-        this.sharedWishlist = mockData[this.shareToken];
-        this.noResults = false;
-      } else {
+      if (!this.shareToken) {
+        this.noResults = true;
         this.sharedWishlist = [];
-        this.noResults = true; // No results found
+        return;
+      }
+
+      try {
+        // Make the GET request to fetch the shared wishlist
+        const response = await axios.get(`${baseURL}/${this.shareToken}`);
+
+        // Map the response data to sharedWishlist
+        this.sharedWishlist = response.data.map((item) => ({
+          ID: item.ID, // ID of the item
+          EventID: item.EventID, // Event ID
+          Quantity: item.Quantity, // Quantity of the item
+        }));
+
+        this.noResults = this.sharedWishlist.length === 0; // Check if results are empty
+      } catch (error) {
+        console.error("Error fetching shared wishlist:", error);
+
+        // Handle errors
+        if (error.response && error.response.status === 404) {
+          this.noResults = true; // No shared wishlist found
+          this.sharedWishlist = [];
+        } else {
+          this.noResults = true;
+          this.sharedWishlist = [];
+          alert("An unexpected error occurred.");
+        }
       }
     },
   },
@@ -103,5 +112,9 @@ th {
 
 td {
   padding: 8px;
+}
+
+button:hover {
+  background-color: #2563eb;
 }
 </style>

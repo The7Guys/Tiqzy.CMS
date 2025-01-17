@@ -48,6 +48,8 @@
 </template>
 
 <script>
+import axios from "axios";
+import { useAuthStore } from "@/stores/auth-store"; // Pinia store
 import TableComponent from "@/components/TableComponent.vue";
 import TableRow from "@/components/TableRow.vue";
 
@@ -64,32 +66,32 @@ export default {
     };
   },
   methods: {
-    // Fetch item by GUID
-    fetchData() {
-      const mockData = [
-        {
-          PartitionKey: "123e4567-e89b-12d3-a456-426614174000",
-          RowKey: "product_1",
-          Timestamp: "2023-01-15T10:30:00Z",
-          email: "user1@example.com",
-        },
-        {
-          PartitionKey: "123e4567-e89b-12d3-a456-426614174001",
-          RowKey: "product_2",
-          Timestamp: "2023-01-16T11:00:00Z",
-          email: "user2@example.com",
-        },
-      ];
+    // Fetch item by GUID using Axios and Authorization header
+    async fetchData() {
+      const baseURL = "http://api.tiqzyapi.nl/wishlists/";
+      const authStore = useAuthStore(); // Get the auth store
+      const token = authStore.token; // Get the token from the store
 
-      // Find the item matching the GUID
-      const result = mockData.find((data) => data.PartitionKey === this.guid);
+      try {
+        // Make the GET request with Authorization header
+        const response = await axios.get(`${baseURL}${this.guid}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      if (result) {
-        this.item = result;
+        // Assign the response data to `item`
+        this.item = response.data;
         this.noResults = false; // Reset noResults state
-      } else {
-        this.item = null;
-        this.noResults = true; // Show no results message
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          // If API responds with 404, no item found
+          this.noResults = true;
+          this.item = null;
+        } else {
+          // Log or handle other errors
+          console.error("Error fetching data:", error);
+        }
       }
     },
   },
