@@ -14,10 +14,10 @@
           class="flex-1 p-2 border border-gray-300 rounded"
         />
         <button
-          @click="deleteWishlist"
+          @click="disableShareWishlist"
           class="p-2 bg-red-500 text-white rounded hover:bg-red-600"
         >
-          Delete Wishlist
+          Disable Share
         </button>
       </div>
     </div>
@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -44,20 +46,39 @@ export default {
     };
   },
   methods: {
-    // Simulate deleting a wishlist
-    deleteWishlist() {
+    // Disable sharing for a wishlist
+    async disableShareWishlist() {
       if (!this.guid) {
         this.errorMessage = "Please enter a valid GUID.";
         this.successMessage = null;
         return;
       }
 
-      // Mock API response
-      this.successMessage = `Wishlist with GUID '${this.guid}' successfully deleted.`;
-      this.errorMessage = null;
+      const baseURL = "http://api.tiqzyapi.nl/wishlists"; // Replace with your API endpoint
 
-      // Clear input field
-      this.guid = "";
+      try {
+        // Make the POST request to disable sharing
+        await axios.post(`${baseURL}/${this.guid}/disable-share`);
+
+        // Handle the success response
+        this.successMessage = `Sharing for Wishlist with GUID '${this.guid}' has been successfully disabled.`;
+        this.errorMessage = null;
+
+        // Clear input field
+        this.guid = "";
+      } catch (error) {
+        console.error("Error disabling share for wishlist:", error);
+
+        // Handle errors
+        if (error.response) {
+          this.errorMessage =
+            error.response.data.message || "Failed to disable sharing.";
+        } else {
+          this.errorMessage = "An unexpected error occurred.";
+        }
+
+        this.successMessage = null;
+      }
     },
   },
 };

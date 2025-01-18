@@ -20,7 +20,7 @@ import GetItems from "@/components/wishlists/GetItems.vue";
 import AddItem from "@/components/wishlists/AddItem.vue";
 import GetShared from "@/components/wishlists/GetShared.vue";
 import ShareWishlist from "@/components/wishlists/ShareWishlist.vue";
-import DeleteWishlist from "@/components/wishlists/DeleteWishlist.vue";
+import DisablingShare from "@/components/wishlists/DisablingShare.vue";
 
 export default {
   components: {
@@ -37,7 +37,7 @@ export default {
         { key: "addItem", label: "Add Item" },
         { key: "getShared", label: "Get Shared" },
         { key: "shareWishlist", label: "Share Wishlist" },
-        { key: "deleteWishlist", label: "Delete Wishlist" },
+        { key: "disablingShare", label: "Disable Wishlist" },
       ],
       // Map tabs to components
       components: {
@@ -48,7 +48,7 @@ export default {
         addItem: AddItem,
         getShared: GetShared,
         shareWishlist: ShareWishlist,
-        deleteWishlist: DeleteWishlist,
+        disablingShare: DisablingShare,
       },
     };
   },

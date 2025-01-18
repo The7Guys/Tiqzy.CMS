@@ -35,10 +35,7 @@
         class="p-2 border border-gray-300 rounded w-full mb-2"
       />
 
-      <button
-        @click="addItem"
-        class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-2"
-      >
+      <button @click="addItem" class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-2">
         Add Item
       </button>
     </div>
@@ -56,36 +53,66 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data() {
     return {
-      guid: "", // GUID input value
-      productId: "", // Product ID input value
-      quantity: "", // Quantity input value
+      guid: '', // GUID input value
+      productId: '', // Product ID input value
+      quantity: '', // Quantity input value
       responseData: null, // Success message
       errorMessage: null, // Error message
-    };
+    }
   },
   methods: {
-    // Simulate adding an item
-    addItem() {
+    // Add item to wishlist
+    async addItem() {
+      // Validate input fields
       if (!this.guid || !this.productId || !this.quantity) {
-        this.errorMessage = "All fields are required.";
-        this.responseData = null;
-        return;
+        this.errorMessage = 'All fields are required.'
+        this.responseData = null
+        return
       }
 
-      // Mock API response
-      this.responseData = `Item with Product ID '${this.productId}' and Quantity '${this.quantity}' successfully added to Wishlist '${this.guid}'.`;
-      this.errorMessage = null;
+      if (this.quantity <= 0) {
+        this.errorMessage = 'Quantity must be greater than zero.'
+        this.responseData = null
+        return
+      }
 
-      // Clear input fields
-      this.guid = "";
-      this.productId = "";
-      this.quantity = "";
+      const baseURL = 'http://api.tiqzyapi.nl/wishlists' // Replace with your API endpoint
+
+      try {
+        // Make the POST request to add the item (no `response` variable needed)
+        await axios.post(`${baseURL}/${this.guid}/items`, {
+          eventID: this.productId,
+          quantity: parseInt(this.quantity, 10),
+        })
+
+        // Handle the success response
+        this.responseData = `Item with Product ID '${this.productId}' and Quantity '${this.quantity}' successfully added to Wishlist '${this.guid}'.`
+        this.errorMessage = null
+
+        // Clear input fields
+        this.guid = ''
+        this.productId = ''
+        this.quantity = ''
+      } catch (error) {
+        console.error('Error adding item:', error)
+
+        // Handle the error response
+        if (error.response) {
+          this.errorMessage = error.response.data.message || 'Failed to add item.'
+        } else {
+          this.errorMessage = 'An unexpected error occurred.'
+        }
+
+        this.responseData = null
+      }
     },
   },
-};
+}
 </script>
 
 <style scoped>

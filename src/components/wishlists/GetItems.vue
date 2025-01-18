@@ -26,15 +26,13 @@
     <div v-if="items.length" class="mt-4">
       <TableComponent>
         <template #table-header>
-          <th>Product ID</th>
+          <th>Event ID</th>
           <th>Quantity</th>
-          <th>Timestamp</th>
         </template>
-        <template v-for="item in items" :key="item.RowKey">
+        <template v-for="item in items" :key="item.ID">
           <TableRow>
-            <td>{{ item.RowKey }}</td>
+            <td>{{ item.EventID }}</td>
             <td>{{ item.Quantity }}</td>
-            <td>{{ item.Timestamp }}</td>
           </TableRow>
         </template>
       </TableComponent>
@@ -48,6 +46,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import TableComponent from "@/components/TableComponent.vue";
 import TableRow from "@/components/TableRow.vue";
 
@@ -65,29 +64,40 @@ export default {
   },
   methods: {
     // Fetch items by GUID
-    fetchItems() {
-      // Simulate API response
-      const mockData = {
-        "123e4567-e89b-12d3-a456-426614174000": [
-          {
-            RowKey: "product_1",
-            Quantity: 2,
-            Timestamp: "2023-01-15T10:30:00Z",
-          },
-          {
-            RowKey: "product_2",
-            Quantity: 1,
-            Timestamp: "2023-01-16T11:00:00Z",
-          },
-        ],
-      };
+    async fetchItems() {
+      const baseURL = "http://api.tiqzyapi.nl/wishlists"; // Replace with your API URL
 
-      if (mockData[this.guid]) {
-        this.items = mockData[this.guid];
-        this.noResults = false;
-      } else {
+      if (!this.guid) {
+        this.noResults = true;
         this.items = [];
-        this.noResults = true; // No results found
+        return;
+      }
+
+      try {
+        // Make the GET request to fetch wishlist items
+        const response = await axios.get(`${baseURL}/${this.guid}/items`);
+
+        // Map response data to the items array
+        this.items = response.data.map((item) => ({
+          ID: item.ID, // Maps to the backend's RowKey
+          EventID: item.EventID, // Event ID
+          Quantity: item.Quantity, // Quantity of the item
+        }));
+
+        this.noResults = this.items.length === 0; // Check if items exist
+      } catch (error) {
+        console.error("Error fetching items:", error);
+
+        // Handle errors
+        if (error.response && error.response.status === 404) {
+          this.noResults = true; // No items found
+          this.items = [];
+        } else {
+          // Unexpected error
+          this.noResults = true;
+          this.items = [];
+          alert("An error occurred while fetching items.");
+        }
       }
     },
   },
@@ -103,5 +113,9 @@ th {
 
 td {
   padding: 8px;
+}
+
+button:hover {
+  background-color: #2563eb;
 }
 </style>

@@ -61,5 +61,11 @@ const routes = [
       name: 'wishlists',
     },
   },
+  {
+    title: 'Orders',
+    route: {
+      name: 'orders',
+    },
+  },
 ]
 </script>
