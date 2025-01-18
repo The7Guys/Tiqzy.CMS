@@ -18,16 +18,25 @@ import LoadingOverlay from '@/components/LoadingOverlay.vue'
 const authStore = useAuthStore()
 const router = useRouter()
 
-onMounted(() => {
-  if (!authStore.token) {
-   router.push({ name: 'login' })
-  }
-
+onMounted(async () => {
   // On route change, refresh token
   router.afterEach(() => {
     if (authStore.token) {
       authStore.requestFreshTokens()
     }
   })
+
+  if (!authStore.token) {
+    router.push({ name: 'login' })
+  } else {
+    try {
+      authStore.user = await authStore.getSelf()
+    } catch (error) {
+      console.error(error)
+      if (error.response.status === 401) {
+        router.push({ name: 'login' })
+      }
+    }
+  }
 })
 </script>

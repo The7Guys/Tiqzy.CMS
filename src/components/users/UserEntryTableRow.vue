@@ -12,7 +12,8 @@
     <td>
       {{ user.lastName }}
     </td>
-    <div>
+    <div class="gap-2 flex py-1">
+      <ButtonComponent @click="handleDetails">Details</ButtonComponent>
       <ButtonComponent @click="handleDelete" kind="danger">Delete</ButtonComponent>
     </div>
   </TableRow>
@@ -28,6 +29,7 @@ import { useLoading } from '@/composables/loading.js'
 const swal = useSwal()
 const userStore = useUserStore()
 const loading = useLoading()
+const emit = defineEmits(['openDetails'])
 
 const props = defineProps({
   user: Object,
@@ -57,5 +59,9 @@ const handleDelete = () => {
         }
       }
     })
+}
+
+const handleDetails = () => {
+  emit('openDetails', props.user)
 }
 </script>

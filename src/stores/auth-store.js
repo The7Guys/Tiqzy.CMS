@@ -6,6 +6,7 @@ export const useAuthStore = defineStore('auth', () => {
   const root = '/auth/auth'
   const token = ref(null)
   const refreshToken = ref(null)
+  const user = ref(null)
 
   onBeforeMount(() => {
     token.value = localStorage.getItem('token')
@@ -29,6 +30,7 @@ export const useAuthStore = defineStore('auth', () => {
     refreshToken.value = null
     localStorage.removeItem('token')
     localStorage.removeItem('refreshToken')
+    user.value = null
     delete api.defaults.headers.common['Authorization']
   }
 
@@ -48,5 +50,12 @@ export const useAuthStore = defineStore('auth', () => {
     api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
   }
 
-  return { token, login, logout, getSelf, requestFreshTokens }
+  const updatePassword = async (oldPassword, password) => {
+    await api.post(root + '/password', {
+      oldPassword: oldPassword,
+      password: password,
+    })
+  }
+
+  return { token, login, logout, getSelf, requestFreshTokens, user, updatePassword }
 })
