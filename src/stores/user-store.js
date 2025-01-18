@@ -15,5 +15,15 @@ export const useUserStore = defineStore('user', () => {
     await api.delete(root + '/' + id)
   }
 
-  return { users, fetchUsers, deleteUser }
+  const updateUser = async (id, data) => {
+    const response = await api.put(root + '/' + id, data)
+    return response.data
+  }
+
+  const createUser = async (data) => {
+    const response = await api.post(root, data)
+    return response.data
+  }
+
+  return { users, fetchUsers, deleteUser, updateUser, createUser }
 })

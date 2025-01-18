@@ -27,7 +27,12 @@ const router = createRouter({
       path: '/wishlists',
       name: 'wishlists',
       component: () => import('../views/WishlistsView.vue'),
-    }
+    },
+    {
+      path: '/account',
+      name: 'account',
+      component: () => import('../views/AccountView.vue'),
+    },
   ],
 })
 

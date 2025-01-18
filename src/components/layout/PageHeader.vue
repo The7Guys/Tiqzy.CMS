@@ -15,7 +15,10 @@
       </div>
     </div>
 
-    <div>
+    <div class="flex gap-4">
+      <router-link v-if="authStore.user" :to="{ name: 'account' }">
+        Account: {{ authStore.user.firstName }}
+      </router-link>
       <button v-if="authStore.token" @click="logout">Logout</button>
     </div>
   </header>
@@ -50,6 +53,12 @@ const routes = [
     title: 'Tickets',
     route: {
       name: 'tickets',
+    },
+  },
+  {
+    title: 'Wishlists',
+    route: {
+      name: 'wishlists',
     },
   },
 ]
