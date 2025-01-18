@@ -14,7 +14,7 @@ export const useOrderStore = defineStore('order', () => {
    */
   const createOrder = async (orderDto) => {
     try {
-      const response = await api.post('/orders/orders', orderDto);
+      const response = await api.post('/orders', orderDto);
       orders.value.push(response.data);
       return response.data;
     } catch (error) {
@@ -30,7 +30,7 @@ export const useOrderStore = defineStore('order', () => {
    */
   const getOrderByEmailAndOrderId = async (emailAddress, orderId) => {
     try {
-      const response = await api.get(`/orders/orders/${emailAddress}/${orderId}`);
+      const response = await api.get(`/orders/${emailAddress}/${orderId}`);
       orderDetails.value = response.data;
       return response.data;
     } catch (error) {
@@ -47,7 +47,7 @@ export const useOrderStore = defineStore('order', () => {
    */
   const updateOrderStatus = async (orderId, statusUpdateRequest) => {
     try {
-      const response = await api.put(`/orders/orders/${orderId}/status`, statusUpdateRequest);
+      const response = await api.put(`/orders/${orderId}/status`, statusUpdateRequest);
       const updatedOrder = response.data;
 
       // Update local store if order exists
@@ -68,7 +68,7 @@ export const useOrderStore = defineStore('order', () => {
    */
   const getOrdersByEmail = async (emailAddress) => {
     try {
-      const response = await api.get(`/orders/orders/${emailAddress}`);
+      const response = await api.get(`/orders/${emailAddress}`);
       orders.value = response.data;
       return response.data;
     } catch (error) {
