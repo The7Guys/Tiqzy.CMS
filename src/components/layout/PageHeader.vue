@@ -57,6 +57,12 @@ const routes = [
     route: {
       name: 'wishlists',
     },
-  }
+  },
+  {
+    title: 'Orders',
+    route: {
+      name: 'orders',
+    },
+  },
 ]
 </script>
