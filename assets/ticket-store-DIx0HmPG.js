@@ -1,0 +1,1 @@
+import{s as c,r as a,x as o}from"./index-BWaTWCz4.js";const n=c("ticket",()=>{const e="/tickets/tickets",t=a([]);return{tickets:t,fetchTickets:async()=>{const s=await o.get(e);t.value=await s.data}}});export{n as u};
