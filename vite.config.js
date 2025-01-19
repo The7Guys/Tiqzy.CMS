@@ -6,7 +6,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/Tiqzy.CMS/',
+  base: process.env.NODE_ENV === 'production' ? '/Tiqzy.CMS/' : '/',
   plugins: [vue(), vueDevTools()],
   resolve: {
     alias: {
