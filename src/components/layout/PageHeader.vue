@@ -67,5 +67,11 @@ const routes = [
       name: 'orders',
     },
   },
+  {
+    title: 'Payments',
+    route: {
+      name: 'payments',
+    },
+  },
 ]
 </script>
