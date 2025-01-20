@@ -35,53 +35,52 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from '@/composables/api.js'
 
 export default {
   data() {
     return {
-      guid: "", // GUID input value
+      guid: '', // GUID input value
       successMessage: null, // Success message
       errorMessage: null, // Error message for invalid input
-    };
+    }
   },
   methods: {
     // Disable sharing for a wishlist
     async disableShareWishlist() {
       if (!this.guid) {
-        this.errorMessage = "Please enter a valid GUID.";
-        this.successMessage = null;
-        return;
+        this.errorMessage = 'Please enter a valid GUID.'
+        this.successMessage = null
+        return
       }
 
-      const baseURL = "http://api.tiqzyapi.nl/wishlists"; // Replace with your API endpoint
+      const baseURL = '/wishlists' // Replace with your API endpoint
 
       try {
         // Make the POST request to disable sharing
-        await axios.post(`${baseURL}/${this.guid}/disable-share`);
+        await api.post(`${baseURL}/${this.guid}/disable-share`)
 
         // Handle the success response
-        this.successMessage = `Sharing for Wishlist with GUID '${this.guid}' has been successfully disabled.`;
-        this.errorMessage = null;
+        this.successMessage = `Sharing for Wishlist with GUID '${this.guid}' has been successfully disabled.`
+        this.errorMessage = null
 
         // Clear input field
-        this.guid = "";
+        this.guid = ''
       } catch (error) {
-        console.error("Error disabling share for wishlist:", error);
+        console.error('Error disabling share for wishlist:', error)
 
         // Handle errors
         if (error.response) {
-          this.errorMessage =
-            error.response.data.message || "Failed to disable sharing.";
+          this.errorMessage = error.response.data.message || 'Failed to disable sharing.'
         } else {
-          this.errorMessage = "An unexpected error occurred.";
+          this.errorMessage = 'An unexpected error occurred.'
         }
 
-        this.successMessage = null;
+        this.successMessage = null
       }
     },
   },
-};
+}
 </script>
 
 <style scoped>

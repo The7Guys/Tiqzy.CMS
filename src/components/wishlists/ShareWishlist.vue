@@ -13,10 +13,7 @@
           placeholder="Enter GUID"
           class="flex-1 p-2 border border-gray-300 rounded"
         />
-        <button
-          @click="shareWishlist"
-          class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
+        <button @click="shareWishlist" class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600">
           Share Wishlist
         </button>
       </div>
@@ -35,50 +32,49 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from '@/composables/api.js'
 
 export default {
   data() {
     return {
-      guid: "", // GUID input value
+      guid: '', // GUID input value
       shareToken: null, // Generated share token
       errorMessage: null, // Error message for invalid input
-    };
+    }
   },
   methods: {
     // Share wishlist to generate a share token
     async shareWishlist() {
       if (!this.guid) {
-        this.errorMessage = "Please enter a valid GUID.";
-        this.shareToken = null;
-        return;
+        this.errorMessage = 'Please enter a valid GUID.'
+        this.shareToken = null
+        return
       }
 
-      const baseURL = "http://api.tiqzyapi.nl/wishlists"; // Replace with your API endpoint
+      const baseURL = '/wishlists' // Replace with your API endpoint
 
       try {
         // Make the POST request to generate the share token
-        const response = await axios.post(`${baseURL}/${this.guid}/share`);
+        const response = await api.post(`${baseURL}/${this.guid}/share`)
 
         // Handle the success response
-        this.shareToken = response.data.token; // Assuming the backend returns the token in `response.data.token`
-        this.errorMessage = null;
+        this.shareToken = response.data.token // Assuming the backend returns the token in `response.data.token`
+        this.errorMessage = null
       } catch (error) {
-        console.error("Error sharing wishlist:", error);
+        console.error('Error sharing wishlist:', error)
 
         // Handle errors
         if (error.response) {
-          this.errorMessage =
-            error.response.data.message || "Failed to share wishlist.";
+          this.errorMessage = error.response.data.message || 'Failed to share wishlist.'
         } else {
-          this.errorMessage = "An unexpected error occurred.";
+          this.errorMessage = 'An unexpected error occurred.'
         }
 
-        this.shareToken = null;
+        this.shareToken = null
       }
     },
   },
-};
+}
 </script>
 
 <style scoped>

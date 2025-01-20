@@ -2,10 +2,7 @@
   <div>
     <!-- Header with Fetch Button -->
     <div class="mb-4 flex items-center space-x-4">
-      <button
-        @click="fetchData"
-        class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      >
+      <button @click="fetchData" class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600">
         Fetch
       </button>
       <div v-if="errorMessage" class="text-red-500">
@@ -65,9 +62,9 @@
 </template>
 
 <script>
-import axios from "axios";
-import TableComponent from "@/components/TableComponent.vue";
-import TableRow from "@/components/TableRow.vue";
+import TableComponent from '@/components/TableComponent.vue'
+import TableRow from '@/components/TableRow.vue'
+import api from '@/composables/api.js'
 
 export default {
   components: {
@@ -80,76 +77,76 @@ export default {
       data: [],
       // Sorting state
       sortConfig: {
-        key: "",
+        key: '',
         ascending: true,
       },
       // Filters
       filters: {
-        email: "",
+        email: '',
       },
       // Error message
       errorMessage: null,
-    };
+    }
   },
   computed: {
     // Filter and sort the data
     filteredAndSortedData() {
-      let result = [...this.data];
+      let result = [...this.data]
 
       // Filter by email
       if (this.filters.email) {
         result = result.filter((item) =>
-          item.Email.toLowerCase().includes(this.filters.email.toLowerCase())
-        );
+          item.Email.toLowerCase().includes(this.filters.email.toLowerCase()),
+        )
       }
 
       // Sort the data
       if (this.sortConfig.key) {
         result.sort((a, b) => {
-          const key = this.sortConfig.key;
-          const aValue = a[key];
-          const bValue = b[key];
+          const key = this.sortConfig.key
+          const aValue = a[key]
+          const bValue = b[key]
 
-          if (aValue < bValue) return this.sortConfig.ascending ? -1 : 1;
-          if (aValue > bValue) return this.sortConfig.ascending ? 1 : -1;
-          return 0;
-        });
+          if (aValue < bValue) return this.sortConfig.ascending ? -1 : 1
+          if (aValue > bValue) return this.sortConfig.ascending ? 1 : -1
+          return 0
+        })
       }
 
-      return result;
+      return result
     },
     // Display the correct arrow based on sorting direction
     sortArrow() {
-      return this.sortConfig.ascending ? "▲" : "▼";
+      return this.sortConfig.ascending ? '▲' : '▼'
     },
   },
   methods: {
     // Handle sorting
     sort(key) {
       if (this.sortConfig.key === key) {
-        this.sortConfig.ascending = !this.sortConfig.ascending;
+        this.sortConfig.ascending = !this.sortConfig.ascending
       } else {
-        this.sortConfig.key = key;
-        this.sortConfig.ascending = true;
+        this.sortConfig.key = key
+        this.sortConfig.ascending = true
       }
     },
     // Fetch data from the backend
     async fetchData() {
       try {
-        const response = await axios.get("http://api.tiqzyapi.nl/wishlists"); // Replace with your API URL
-        this.data = response.data;
-        this.errorMessage = null; // Clear error message on success
+        const response = await api.get('/wishlists') // Replace with your API URL
+        this.data = response.data
+        this.errorMessage = null // Clear error message on success
       } catch (error) {
-        console.error("Failed to fetch wishlists:", error);
-        this.errorMessage = "An error occurred while fetching wishlists."; // Display inline error
+        console.error('Failed to fetch wishlists:', error)
+        this.errorMessage = 'An error occurred while fetching wishlists.' // Display inline error
       }
     },
   },
   mounted() {
     // Fetch data when the component is mounted
-    this.fetchData();
+    this.fetchData()
   },
-};
+}
 </script>
 
 <style scoped>

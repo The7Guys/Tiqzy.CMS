@@ -2,9 +2,7 @@
   <div>
     <!-- Input and Button -->
     <div class="mb-4">
-      <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-        Enter Email:
-      </label>
+      <label for="email" class="block text-sm font-medium text-gray-700 mb-2"> Enter Email: </label>
       <div class="flex space-x-2">
         <input
           v-model="email"
@@ -46,9 +44,9 @@
 </template>
 
 <script>
-import axios from "axios";
-import TableComponent from "@/components/TableComponent.vue";
-import TableRow from "@/components/TableRow.vue";
+import TableComponent from '@/components/TableComponent.vue'
+import TableRow from '@/components/TableRow.vue'
+import api from '@/composables/api.js'
 
 export default {
   components: {
@@ -57,49 +55,49 @@ export default {
   },
   data() {
     return {
-      email: "", // Email input value
+      email: '', // Email input value
       responseData: null, // Response data to display
       errorMessage: null, // Error message for invalid input
-    };
+    }
   },
   methods: {
     // Create wishlist via API
     async createWishlist() {
       if (!this.email) {
-        this.errorMessage = "Please enter a valid email.";
-        this.responseData = null;
-        return;
+        this.errorMessage = 'Please enter a valid email.'
+        this.responseData = null
+        return
       }
 
-      const baseURL = "http://api.tiqzyapi.nl/wishlists";
+      const baseURL = '/wishlists'
 
       try {
         // Make the POST request to create a wishlist
-        const response = await axios.post(baseURL, { email: this.email });
+        const response = await api.post(baseURL, { email: this.email })
 
         // Map the response data directly
         this.responseData = {
           ID: response.data.ID, // Maps to backend's `ID`
           Email: response.data.Email, // Maps to backend's `Email`
           IsShared: response.data.IsShared, // Maps to backend's `IsShared`
-        };
+        }
 
-        this.errorMessage = null; // Clear error message
+        this.errorMessage = null // Clear error message
       } catch (error) {
-        console.error("Error creating wishlist:", error);
+        console.error('Error creating wishlist:', error)
 
         // Handle errors
         if (error.response) {
-          this.errorMessage = error.response.data.message || "Failed to create wishlist.";
+          this.errorMessage = error.response.data.message || 'Failed to create wishlist.'
         } else {
-          this.errorMessage = "An unexpected error occurred.";
+          this.errorMessage = 'An unexpected error occurred.'
         }
 
-        this.responseData = null;
+        this.responseData = null
       }
     },
   },
-};
+}
 </script>
 
 <style scoped>

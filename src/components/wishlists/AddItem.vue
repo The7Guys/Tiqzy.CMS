@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import api from '@/composables/api.js'
 
 export default {
   data() {
@@ -81,11 +81,9 @@ export default {
         return
       }
 
-      const baseURL = 'http://api.tiqzyapi.nl/wishlists' // Replace with your API endpoint
-
       try {
         // Make the POST request to add the item (no `response` variable needed)
-        await axios.post(`${baseURL}/${this.guid}/items`, {
+        await api.post(`/wishlists/${this.guid}/items`, {
           eventID: this.productId,
           quantity: parseInt(this.quantity, 10),
         })

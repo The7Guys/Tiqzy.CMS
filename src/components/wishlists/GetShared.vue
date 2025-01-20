@@ -46,9 +46,9 @@
 </template>
 
 <script>
-import axios from "axios";
-import TableComponent from "@/components/TableComponent.vue";
-import TableRow from "@/components/TableRow.vue";
+import TableComponent from '@/components/TableComponent.vue'
+import TableRow from '@/components/TableRow.vue'
+import api from '@/composables/api.js'
 
 export default {
   components: {
@@ -57,50 +57,50 @@ export default {
   },
   data() {
     return {
-      shareToken: "", // Input value for Share Token
+      shareToken: '', // Input value for Share Token
       sharedWishlist: [], // List of shared items fetched for the token
       noResults: false, // Tracks if no results are found
-    };
+    }
   },
   methods: {
     // Fetch shared wishlist by Share Token
     async fetchSharedWishlist() {
-      const baseURL = "http://api.tiqzyapi.nl/wishlists/shared"; // Replace with your API endpoint
+      const baseURL = '/wishlists/shared' // Replace with your API endpoint
 
       if (!this.shareToken) {
-        this.noResults = true;
-        this.sharedWishlist = [];
-        return;
+        this.noResults = true
+        this.sharedWishlist = []
+        return
       }
 
       try {
         // Make the GET request to fetch the shared wishlist
-        const response = await axios.get(`${baseURL}/${this.shareToken}`);
+        const response = await api.get(`${baseURL}/${this.shareToken}`)
 
         // Map the response data to sharedWishlist
         this.sharedWishlist = response.data.map((item) => ({
           ID: item.ID, // ID of the item
           EventID: item.EventID, // Event ID
           Quantity: item.Quantity, // Quantity of the item
-        }));
+        }))
 
-        this.noResults = this.sharedWishlist.length === 0; // Check if results are empty
+        this.noResults = this.sharedWishlist.length === 0 // Check if results are empty
       } catch (error) {
-        console.error("Error fetching shared wishlist:", error);
+        console.error('Error fetching shared wishlist:', error)
 
         // Handle errors
         if (error.response && error.response.status === 404) {
-          this.noResults = true; // No shared wishlist found
-          this.sharedWishlist = [];
+          this.noResults = true // No shared wishlist found
+          this.sharedWishlist = []
         } else {
-          this.noResults = true;
-          this.sharedWishlist = [];
-          alert("An unexpected error occurred.");
+          this.noResults = true
+          this.sharedWishlist = []
+          alert('An unexpected error occurred.')
         }
       }
     },
   },
-};
+}
 </script>
 
 <style scoped>
