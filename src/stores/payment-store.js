@@ -1,15 +1,13 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-// import api from '@/composables/api.js'
-import axios from 'axios'
+import api from '@/composables/api.js'
 
 export const usePaymentStore = defineStore('payment', () => {
-  // const root = '/payments'
+  const root = '/payments/all'
   const payments = ref([])
 
   const fetchPayments = async () => {
-    // const response = await api.get(root)
-    const response = await axios.get('http://localhost:8080/payments/all')
+    const response = await api.get(root)
     payments.value = await response.data
   }
 
