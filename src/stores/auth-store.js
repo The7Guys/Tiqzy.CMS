@@ -52,10 +52,38 @@ export const useAuthStore = defineStore('auth', () => {
 
   const updatePassword = async (oldPassword, password) => {
     await api.post(root + '/password', {
-      oldPassword: oldPassword,
-      password: password,
+      oldPassword,
+      password,
     })
   }
 
-  return { token, login, logout, getSelf, requestFreshTokens, user, updatePassword }
+  const requestToken = async (email) => {
+    await api.post(root + '/login/request', {
+      email,
+    })
+  }
+
+  const loginWithToken = async (email, loginToken) => {
+    const response = await api.post(root + '/login/token', {
+      email,
+      token: loginToken,
+    })
+    token.value = response.data.token
+    refreshToken.value = response.data.refreshToken
+    localStorage.setItem('token', response.data.token)
+    localStorage.setItem('refreshToken', response.data.refreshToken)
+    api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
+  }
+
+  return {
+    token,
+    login,
+    logout,
+    getSelf,
+    requestFreshTokens,
+    user,
+    updatePassword,
+    requestToken,
+    loginWithToken,
+  }
 })
