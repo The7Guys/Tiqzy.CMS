@@ -54,7 +54,7 @@ const requestToken = async () => {
 
 const handleSubmit = async () => {
   if (!tokenRequested.value) {
-    requestToken()
+    await requestToken()
     return
   }
 
@@ -62,6 +62,7 @@ const handleSubmit = async () => {
   loading.show()
   try {
     await authStore.loginWithToken(email.value, token.value)
+    authStore.user = await authStore.getSelf()
     router.push({ name: 'home' })
   } catch (error) {
     errorMessage.value = error.message

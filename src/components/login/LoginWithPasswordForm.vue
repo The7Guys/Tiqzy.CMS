@@ -40,6 +40,7 @@ const handleSubmit = async () => {
   loading.show()
   try {
     await authStore.login(email.value, password.value)
+    authStore.user = await authStore.getSelf()
     router.push({ name: 'home' })
   } catch (error) {
     errorMessage.value = error.message

@@ -75,8 +75,18 @@ export const useAuthStore = defineStore('auth', () => {
     api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
   }
 
+  const register = async (email, firstName, lastName) => {
+    const response = await api.post(root + '/register', {
+      email,
+      firstName,
+      lastName,
+    })
+    return response
+  }
+
   return {
     token,
+    refreshToken,
     login,
     logout,
     getSelf,
@@ -85,5 +95,6 @@ export const useAuthStore = defineStore('auth', () => {
     updatePassword,
     requestToken,
     loginWithToken,
+    register,
   }
 })

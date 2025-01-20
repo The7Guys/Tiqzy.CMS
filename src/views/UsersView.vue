@@ -1,6 +1,10 @@
 <template>
   <div>
-    <h1>Users</h1>
+    <div class="flex justify-between w-full">
+      <h1>Users</h1>
+      <ButtonComponent @click="showCreateUser = !showCreateUser"> Create</ButtonComponent>
+    </div>
+    <RegisterForm v-show="showCreateUser" @save="refetch" />
     <div class="flex full-width">
       <div :class="{ 'basis-3/5': editedUser, 'w-full': !editedUser }">
         <TableComponent>
@@ -43,11 +47,13 @@ import UserEntryTableRow from '@/components/users/UserEntryTableRow.vue'
 import TableComponent from '@/components/TableComponent.vue'
 import ButtonComponent from '@/components/inputs/ButtonComponent.vue'
 import UserDetails from '@/components/users/UserDetails.vue'
+import RegisterForm from '@/components/login/RegisterForm.vue'
 
 const userStore = useUserStore()
 const skip = ref(0)
 const take = ref(10)
 const editedUser = ref(null)
+const showCreateUser = ref(false)
 
 onMounted(() => {
   userStore.fetchUsers()
@@ -56,5 +62,10 @@ onMounted(() => {
 const loadMore = (diff) => {
   skip.value += diff
   userStore.fetchUsers(skip.value, take.value)
+}
+
+const refetch = async () => {
+  skip.value = 0
+  await loadMore(0)
 }
 </script>
