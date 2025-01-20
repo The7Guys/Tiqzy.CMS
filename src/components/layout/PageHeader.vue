@@ -1,9 +1,9 @@
 <template>
   <header class="bg-blue-500 text-white px-4 md:px-14 py-4 flex items-center justify-between">
     <div class="flex gap-4">
-      <a href="/" class="font-bold">Tiqzy CMS</a>
+      <a :href="appUrl" class="font-bold">Tiqzy CMS</a>
 
-      <div v-if="authStore.token" class="flex gap-2">
+      <div v-if="authStore.token" class="flex gap-4">
         <router-link
           v-for="r in routes"
           :key="r.title"
@@ -30,6 +30,7 @@ import { useRoute, useRouter } from 'vue-router'
 const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()
+const appUrl = import.meta.env.BASE_URL
 
 const logout = () => {
   authStore.logout()
@@ -50,7 +51,7 @@ const routes = [
     },
   },
   {
-    title: 'Tickets',
+    title: 'Tickets for Sale',
     route: {
       name: 'tickets',
     },

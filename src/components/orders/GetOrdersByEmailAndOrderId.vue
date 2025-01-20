@@ -2,9 +2,7 @@
   <div>
     <!-- Input Form -->
     <div class="mb-4">
-      <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-        Enter Email:
-      </label>
+      <label for="email" class="block text-sm font-medium text-gray-700 mb-2"> Enter Email: </label>
       <input
         v-model="email"
         id="email"
@@ -30,10 +28,7 @@
       >
         Fetch Order
       </button>
-      <button
-        @click="clearOrder"
-        class="p-2 bg-gray-500 text-white rounded hover:bg-gray-600 mt-2"
-      >
+      <button @click="clearOrder" class="p-2 bg-gray-500 text-white rounded hover:bg-gray-600 mt-2">
         Clear Order
       </button>
     </div>
@@ -42,7 +37,7 @@
     <div v-if="orderData" class="mt-6 p-4 border border-gray-300 rounded">
       <h2 class="text-lg font-bold mb-4">Order Details</h2>
       <p><strong>Order ID:</strong> {{ orderData.orderId }}</p>
-      <p><strong>User Name:</strong> {{ orderData.userName || "Guest" }}</p>
+      <p><strong>User Name:</strong> {{ orderData.userName || 'Guest' }}</p>
       <p><strong>Email Address:</strong> {{ orderData.emailAddress }}</p>
       <p><strong>Order Status:</strong> {{ getOrderStatus(orderData.orderStatus) }}</p>
       <p><strong>Time Slot:</strong> {{ formatDate(orderData.timeSlot) }}</p>
@@ -63,6 +58,18 @@
               {{ item.baseUrl }}
             </a>
           </p>
+          <p>
+            <strong>QR Code:</strong>
+            <img
+              :src="
+                'https://storagedev16.blob.core.windows.net/qr-container/qrcodes/' +
+                item.ticketId +
+                '.png'
+              "
+              :alt="'QR Code ' + item.ticketId"
+              class="qr"
+            />
+          </p>
         </li>
       </ul>
 
@@ -82,52 +89,49 @@
 </template>
 
 <script>
-import { useOrderStore } from '@/stores/order-store'; // Import the order store
-import { ref } from 'vue';
+import { useOrderStore } from '@/stores/order-store' // Import the order store
+import { ref } from 'vue'
 
 export default {
   setup() {
-    const orderStore = useOrderStore(); // Access the store
-    const email = ref('');
-    const orderId = ref('');
-    const orderData = ref(null);
-    const errorMessage = ref(null);
+    const orderStore = useOrderStore() // Access the store
+    const email = ref('')
+    const orderId = ref('')
+    const orderData = ref(null)
+    const errorMessage = ref(null)
 
     // Fetch order data from the store
     const fetchOrder = async () => {
       if (!email.value || !orderId.value) {
-        errorMessage.value = 'Both Email and Order ID are required.';
-        orderData.value = null;
-        return;
+        errorMessage.value = 'Both Email and Order ID are required.'
+        orderData.value = null
+        return
       }
 
       try {
-        const fetchedOrder = await orderStore.getOrderByEmailAndOrderId(
-          email.value,
-          orderId.value
-        );
-        orderData.value = fetchedOrder; // Assign the fetched order data
-        errorMessage.value = null; // Clear any error messages
+        const fetchedOrder = await orderStore.getOrderByEmailAndOrderId(email.value, orderId.value)
+        orderData.value = fetchedOrder // Assign the fetched order data
+        errorMessage.value = null // Clear any error messages
       } catch (error) {
         errorMessage.value =
-          error.response?.data?.message || 'Failed to fetch order. Please try again.';
-        orderData.value = null;
+          error.response?.data?.message || 'Failed to fetch order. Please try again.'
+        orderData.value = null
       }
-    };
+    }
 
     // Clear the order data
     const clearOrder = () => {
-      orderData.value = null;
-      errorMessage.value = null;
-      email.value = '';
-      orderId.value = '';
-    };
+      orderData.value = null
+      errorMessage.value = null
+      email.value = ''
+      orderId.value = ''
+    }
 
     // Format order status
     const getOrderStatus = (status) => {
-      const statuses = ['Pending', 'Completed', 'Canceled'];
-      return statuses[status] || 'Unknown';
-    };
+      const statuses = ['Pending', 'Completed', 'Canceled']
+      return statuses[status] || 'Unknown'
+    }
 
     // Format date
     const formatDate = (dateString) => {
@@ -137,9 +141,9 @@ export default {
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
-      };
-      return new Date(dateString).toLocaleDateString(undefined, options);
-    };
+      }
+      return new Date(dateString).toLocaleDateString(undefined, options)
+    }
 
     return {
       email,
@@ -150,13 +154,17 @@ export default {
       clearOrder,
       getOrderStatus,
       formatDate,
-    };
+    }
   },
-};
+}
 </script>
 
 <style scoped>
 button:hover {
   background-color: #2563eb;
+}
+
+.qr {
+  max-height: 200px;
 }
 </style>
