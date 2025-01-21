@@ -90,6 +90,12 @@ export default {
         // Make the GET request to fetch wishlist items
         const response = await api.get(`${baseURL}/${this.guid}/items`)
 
+        // Handle null or undefined response.data
+        if (!response.data) {
+          this.noResults = true
+          return
+        }
+
         // Map response data to the items array
         this.items = response.data.map((item) => ({
           id: item.id, // Maps to the backend's `id`
