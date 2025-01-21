@@ -20,8 +20,8 @@
     </div>
 
     <!-- Success Message -->
-    <div v-if="shareToken" class="mt-4 text-green-500">
-      Share Token: <strong>{{ shareToken }}</strong>
+    <div v-if="shareURL" class="mt-4 text-green-500">
+      Share URL: <a :href="shareURL" target="_blank" class="text-blue-700 underline">{{ shareURL }}</a>
     </div>
 
     <!-- Error Message -->
@@ -38,27 +38,27 @@ export default {
   data() {
     return {
       guid: '', // GUID input value
-      shareToken: null, // Generated share token
+      shareURL: null, // Generated share URL
       errorMessage: null, // Error message for invalid input
     }
   },
   methods: {
-    // Share wishlist to generate a share token
+    // Share wishlist to generate a share URL
     async shareWishlist() {
       if (!this.guid) {
         this.errorMessage = 'Please enter a valid GUID.'
-        this.shareToken = null
+        this.shareURL = null
         return
       }
 
-      const baseURL = '/wishlists' // Replace with your API endpoint
+      const baseURL = '/wishlists' // API endpoint base URL
 
       try {
-        // Make the POST request to generate the share token
+        // Make the POST request to generate the share URL
         const response = await api.post(`${baseURL}/${this.guid}/share`)
 
         // Handle the success response
-        this.shareToken = response.data.token // Assuming the backend returns the token in `response.data.token`
+        this.shareURL = response.data.share_url // Use `share_url` from the backend response
         this.errorMessage = null
       } catch (error) {
         console.error('Error sharing wishlist:', error)
@@ -70,7 +70,7 @@ export default {
           this.errorMessage = 'An unexpected error occurred.'
         }
 
-        this.shareToken = null
+        this.shareURL = null
       }
     },
   },

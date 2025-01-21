@@ -42,6 +42,11 @@
     <div v-else-if="noResults" class="mt-4 text-red-500">
       No shared wishlist found for the provided Share Token.
     </div>
+
+    <!-- Error Message -->
+    <div v-else-if="errorMessage" class="mt-4 text-red-500">
+      {{ errorMessage }}
+    </div>
   </div>
 </template>
 
@@ -60,15 +65,17 @@ export default {
       shareToken: '', // Input value for Share Token
       sharedWishlist: [], // List of shared items fetched for the token
       noResults: false, // Tracks if no results are found
+      errorMessage: null, // Tracks error messages for unexpected issues
     }
   },
   methods: {
     // Fetch shared wishlist by Share Token
     async fetchSharedWishlist() {
-      const baseURL = '/wishlists/shared' // Replace with your API endpoint
+      const baseURL = '/wishlists/shared'
 
       if (!this.shareToken) {
-        this.noResults = true
+        this.errorMessage = 'Share Token is required.'
+        this.noResults = false
         this.sharedWishlist = []
         return
       }
@@ -79,12 +86,14 @@ export default {
 
         // Map the response data to sharedWishlist
         this.sharedWishlist = response.data.map((item) => ({
-          ID: item.ID, // ID of the item
-          EventID: item.EventID, // Event ID
-          Quantity: item.Quantity, // Quantity of the item
+          ID: item.id, // ID of the item
+          EventID: item.event_id, // Event ID
+          Quantity: item.quantity, // Quantity of the item
         }))
 
-        this.noResults = this.sharedWishlist.length === 0 // Check if results are empty
+        // Reset error and noResults state
+        this.errorMessage = null
+        this.noResults = this.sharedWishlist.length === 0
       } catch (error) {
         console.error('Error fetching shared wishlist:', error)
 
@@ -92,10 +101,11 @@ export default {
         if (error.response && error.response.status === 404) {
           this.noResults = true // No shared wishlist found
           this.sharedWishlist = []
+          this.errorMessage = null
         } else {
-          this.noResults = true
+          this.noResults = false
           this.sharedWishlist = []
-          alert('An unexpected error occurred.')
+          this.errorMessage = 'An unexpected error occurred while fetching the shared wishlist.'
         }
       }
     },

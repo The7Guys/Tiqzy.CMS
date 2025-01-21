@@ -27,34 +27,22 @@
     <!-- Table Component -->
     <TableComponent>
       <template #table-header>
-        <th @click="sort('PartitionKey')" class="cursor-pointer">
-          GUID <span v-if="sortConfig.key === 'PartitionKey'">{{ sortArrow }}</span>
+        <th @click="sort('id')" class="cursor-pointer">
+          GUID <span v-if="sortConfig.key === 'id'">{{ sortArrow }}</span>
         </th>
-        <th @click="sort('RowKey')" class="cursor-pointer">
-          Product ID <span v-if="sortConfig.key === 'RowKey'">{{ sortArrow }}</span>
+        <th @click="sort('email')" class="cursor-pointer">
+          Email <span v-if="sortConfig.key === 'email'">{{ sortArrow }}</span>
         </th>
-        <th @click="sort('Timestamp')" class="cursor-pointer">
-          Timestamp <span v-if="sortConfig.key === 'Timestamp'">{{ sortArrow }}</span>
-        </th>
-        <th @click="sort('Email')" class="cursor-pointer">
-          Email <span v-if="sortConfig.key === 'Email'">{{ sortArrow }}</span>
-        </th>
-        <th @click="sort('IsShared')" class="cursor-pointer">
-          Is Shared <span v-if="sortConfig.key === 'IsShared'">{{ sortArrow }}</span>
-        </th>
-        <th @click="sort('ShareToken')" class="cursor-pointer">
-          Share Token <span v-if="sortConfig.key === 'ShareToken'">{{ sortArrow }}</span>
+        <th @click="sort('is_shared')" class="cursor-pointer">
+          Is Shared <span v-if="sortConfig.key === 'is_shared'">{{ sortArrow }}</span>
         </th>
       </template>
 
-      <template v-for="item in filteredAndSortedData" :key="item.ID">
+      <template v-for="item in filteredAndSortedData" :key="item.id">
         <TableRow>
-          <td>{{ item.ID }}</td>
-          <td>{{ item.ProductID }}</td>
-          <td>{{ item.Timestamp }}</td>
-          <td>{{ item.Email }}</td>
-          <td>{{ item.IsShared }}</td>
-          <td>{{ item.ShareToken }}</td>
+          <td>{{ item.id }}</td>
+          <td>{{ item.email }}</td>
+          <td>{{ item.is_shared }}</td>
         </TableRow>
       </template>
     </TableComponent>
@@ -96,7 +84,7 @@ export default {
       // Filter by email
       if (this.filters.email) {
         result = result.filter((item) =>
-          item.Email.toLowerCase().includes(this.filters.email.toLowerCase()),
+          item.email.toLowerCase().includes(this.filters.email.toLowerCase()),
         )
       }
 
@@ -133,12 +121,12 @@ export default {
     // Fetch data from the backend
     async fetchData() {
       try {
-        const response = await api.get('/wishlists') // Replace with your API URL
+        const response = await api.get('/wishlists')
         this.data = response.data
         this.errorMessage = null // Clear error message on success
       } catch (error) {
         console.error('Failed to fetch wishlists:', error)
-        this.errorMessage = 'An error occurred while fetching wishlists.' // Display inline error
+        this.errorMessage = 'An error occurred while fetching wishlists.'
       }
     },
   },

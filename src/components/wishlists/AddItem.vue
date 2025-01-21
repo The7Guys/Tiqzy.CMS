@@ -9,18 +9,18 @@
         v-model="guid"
         id="guid"
         type="text"
-        placeholder="Enter GUID"
+        placeholder="Enter Wishlist GUID"
         class="p-2 border border-gray-300 rounded w-full mb-2"
       />
 
-      <label for="productId" class="block text-sm font-medium text-gray-700 mb-2">
-        Enter Product ID:
+      <label for="eventID" class="block text-sm font-medium text-gray-700 mb-2">
+        Enter Event ID:
       </label>
       <input
-        v-model="productId"
-        id="productId"
+        v-model="eventID"
+        id="eventID"
         type="text"
-        placeholder="Enter Product ID"
+        placeholder="Enter Event ID"
         class="p-2 border border-gray-300 rounded w-full mb-2"
       />
 
@@ -33,9 +33,13 @@
         type="number"
         placeholder="Enter Quantity"
         class="p-2 border border-gray-300 rounded w-full mb-2"
+        min="1"
       />
 
-      <button @click="addItem" class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-2">
+      <button
+        @click="addItem"
+        class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-2 w-full"
+      >
         Add Item
       </button>
     </div>
@@ -59,7 +63,7 @@ export default {
   data() {
     return {
       guid: '', // GUID input value
-      productId: '', // Product ID input value
+      eventID: '', // Event ID input value
       quantity: '', // Quantity input value
       responseData: null, // Success message
       errorMessage: null, // Error message
@@ -69,32 +73,33 @@ export default {
     // Add item to wishlist
     async addItem() {
       // Validate input fields
-      if (!this.guid || !this.productId || !this.quantity) {
+      if (!this.guid || !this.eventID || !this.quantity) {
         this.errorMessage = 'All fields are required.'
         this.responseData = null
         return
       }
 
-      if (this.quantity <= 0) {
-        this.errorMessage = 'Quantity must be greater than zero.'
+      const parsedQuantity = parseInt(this.quantity, 10)
+      if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
+        this.errorMessage = 'Quantity must be a positive number.'
         this.responseData = null
         return
       }
 
       try {
-        // Make the POST request to add the item (no `response` variable needed)
-        await api.post(`/wishlists/${this.guid}/items`, {
-          eventID: this.productId,
-          quantity: parseInt(this.quantity, 10),
+        // Make the POST request to add the item
+        const response = await api.post(`/wishlists/${this.guid}/items`, {
+          event_id: this.eventID,
+          quantity: parsedQuantity,
         })
 
         // Handle the success response
-        this.responseData = `Item with Product ID '${this.productId}' and Quantity '${this.quantity}' successfully added to Wishlist '${this.guid}'.`
+        this.responseData = response.data.message
         this.errorMessage = null
 
         // Clear input fields
         this.guid = ''
-        this.productId = ''
+        this.eventID = ''
         this.quantity = ''
       } catch (error) {
         console.error('Error adding item:', error)
@@ -116,5 +121,11 @@ export default {
 <style scoped>
 button:hover {
   background-color: #2563eb;
+}
+
+input:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 1px #2563eb;
 }
 </style>

@@ -57,11 +57,11 @@ export default {
       const baseURL = '/wishlists' // Replace with your API endpoint
 
       try {
-        // Make the POST request to disable sharing
-        await api.post(`${baseURL}/${this.guid}/disable-share`)
+        // Make the DELETE request to disable sharing
+        const response = await api.delete(`${baseURL}/${this.guid}/share`)
 
         // Handle the success response
-        this.successMessage = `Sharing for Wishlist with GUID '${this.guid}' has been successfully disabled.`
+        this.successMessage = response.data.message || `Sharing for Wishlist with GUID '${this.guid}' has been successfully disabled.`
         this.errorMessage = null
 
         // Clear input field

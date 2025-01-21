@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <!-- Table Display -->
+    <!-- Response Display -->
     <div v-if="responseData" class="mt-4">
       <TableComponent>
         <template #table-header>
@@ -29,9 +29,9 @@
           <th>Is Shared</th>
         </template>
         <TableRow>
-          <td>{{ responseData.ID }}</td>
-          <td>{{ responseData.Email }}</td>
-          <td>{{ responseData.IsShared }}</td>
+          <td>{{ responseData.id }}</td>
+          <td>{{ responseData.email }}</td>
+          <td>{{ responseData.is_shared }}</td>
         </TableRow>
       </TableComponent>
     </div>
@@ -57,14 +57,15 @@ export default {
     return {
       email: '', // Email input value
       responseData: null, // Response data to display
-      errorMessage: null, // Error message for invalid input
+      errorMessage: null, // Error message for invalid input or server errors
     }
   },
   methods: {
     // Create wishlist via API
     async createWishlist() {
-      if (!this.email) {
-        this.errorMessage = 'Please enter a valid email.'
+      // Validate email before sending the request
+      if (!this.validateEmail(this.email)) {
+        this.errorMessage = 'Invalid email format. Please provide a valid email address.'
         this.responseData = null
         return
       }
@@ -75,18 +76,13 @@ export default {
         // Make the POST request to create a wishlist
         const response = await api.post(baseURL, { email: this.email })
 
-        // Map the response data directly
-        this.responseData = {
-          ID: response.data.ID, // Maps to backend's `ID`
-          Email: response.data.Email, // Maps to backend's `Email`
-          IsShared: response.data.IsShared, // Maps to backend's `IsShared`
-        }
-
+        // Assign the response data to `responseData`
+        this.responseData = response.data
         this.errorMessage = null // Clear error message
       } catch (error) {
         console.error('Error creating wishlist:', error)
 
-        // Handle errors
+        // Handle specific error messages from the backend
         if (error.response) {
           this.errorMessage = error.response.data.message || 'Failed to create wishlist.'
         } else {
@@ -95,6 +91,11 @@ export default {
 
         this.responseData = null
       }
+    },
+    // Simple email validation
+    validateEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      return emailRegex.test(email)
     },
   },
 }
